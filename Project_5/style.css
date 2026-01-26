@@ -1,0 +1,11 @@
+body {
+    font-family: monospace, sans-serif;
+    text-align: center;
+    background-color: #a4a4a4;
+}
+
+canvas {
+    border: 10px solid #333;
+    border-radius: 5px;
+    background-color: pink;
+}
