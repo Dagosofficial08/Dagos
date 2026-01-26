@@ -1,0 +1,81 @@
+🎯 1️⃣ String Functions (teks)
+
+    Paling sering muncul.
+
+    🔹 quote()
+    quote(hello) → "hello"
+
+    🔹 unquote()
+    unquote("hello") → hello
+
+    🔹 str-length()
+    str-length("abc") → 3
+
+    🔹 str-slice()
+    str-slice("button", 1, 3) → "but"
+
+🎯 2️⃣ Color Functions (warna) ⭐⭐⭐
+
+    INI WAJIB TAU.
+
+    🔹 lighten()
+    lighten(#3498db, 20%)
+
+    🔹 darken()
+    darken(#3498db, 20%)
+
+    🔹 rgba()
+    rgba(0, 0, 0, 0.5)
+
+    🔹 mix()
+    mix(red, blue)
+
+🎯 3️⃣ Number & Math Functions
+
+    Untuk ukuran & perhitungan.
+
+    🔹 percentage()
+    percentage(0.5) → 50%
+
+    🔹 round()
+    round(4.6) → 5
+
+    🔹 ceil() / floor()
+    ceil(4.1) → 5
+    floor(4.9) → 4
+
+🎯 4️⃣ List Functions (array-nya Sass)
+
+    Sering dipakai di loop.
+
+    🔹 length()
+    length(10px 20px 30px) → 3
+
+    🔹 nth()
+    nth(10px 20px 30px, 2) → 20px
+
+🎯 5️⃣ Map Functions (object / key-value) ⭐⭐⭐
+
+    SUPER PENTING buat project rapi.
+
+    🔹 map-get()
+    $colors: (
+    primary: blue,
+    danger: red
+    );
+
+    map-get($colors, primary) → blue
+
+🎯 6️⃣ Type Check (cek tipe data)
+
+    Biar nggak error.
+
+    type-of(10px) → number
+    type-of("abc") → string
+
+🎯 7️⃣ Selector & Utility
+
+    Lebih advance, tapi sering kepakai.
+
+    🔹 if()
+    color: if(true, red, blue);
