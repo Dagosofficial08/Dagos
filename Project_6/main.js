@@ -1,61 +1,61 @@
+const socket = io("http://localhost:3000");
 const chat = document.getElementById("cardChat");
 const input = document.getElementById("message");
 const btnSend = document.getElementById("sendBtn");
 
 let messages = JSON.parse(localStorage.getItem("chat")) || [];
-
 messages.forEach(msg => addMessage(msg));
 
-btnSend.addEventListener("click", sendMessage)
+// Dengar chat baru dari server
+socket.on("new-message", (msg) => {
+  addMessage(msg);
+  messages.push(msg);
+  saveChat();
+});
+
+// Kirim pesan
+btnSend.addEventListener("click", sendMessage);
 input.addEventListener("keydown", e => {
-    if (e.key === "Enter") {
-        sendMessage();
-    }
+    if (e.key === "Enter") sendMessage();
 });
 
 function sendMessage() {
     const text = input.value.trim();
-    if (text === "") return;
+    if (!text) return;
 
-    const userMessage = {
-        text: text,
-        sender: "user"
-    }
+    const now = new Date();
+    const time = `${now.getHours().toString().padStart(2,"0")}:${now.getMinutes().toString().padStart(2,"0")}`;
 
-    messages.push(userMessage);
+    const userMessage = { text, sender: "user", time };
+    addMessage(userMessage);       // tampil di UI
+    messages.push(userMessage);    // simpan di localStorage
     saveChat();
-    addMessage(userMessage);
 
     input.value = "";
 
-    setTimeout(() => {
-        botReply(text);
-    }, 1000)
+    // Kirim ke server
+    socket.emit("send-message", { text, sender: "user", time });
+
+    // Bot reply (opsional, bisa server handle)
+    setTimeout(() => botReply(text), 500);
 }
 
 function botReply(userText) {
+    const now = new Date();
+    const time = `${now.getHours().toString().padStart(2,"0")}:${now.getMinutes().toString().padStart(2,"0")}`;
+
     let reply;
+    if (userText.toLowerCase().includes("halo")) reply = "Halo juga, raffi...";
+    else if (userText.toLowerCase().includes("apa kabarmu?")) reply = "Baik aja, mwhehehe";
+    else reply = "Maksudnya?";
 
-    if (userText.toLowerCase().includes("halo")) {
-        reply = "Apa coba?!";
-    } else if (userText.toLowerCase().includes("apa kabarmu?")) {
-        reply = "Baik aja, mwhehehe";
-    } else if (userText.toLowerCase().includes("apa kegiatan?")) {
-        reply = "Kayak biasa, nganggur. Nunggu 19 juta lapangan pekerjaan ngk nongol2 wkwkw";
-    } else if (userText.toLowerCase().includes("wkwk semangatlah yah")) {
-        reply = "Aman Bal";
-    } else {
-        reply = "Maksudnya?";
-    }
-
-    const botMessage = {
-        text: reply,
-        sender: "bot"
-    }
-
+    const botMessage = { text: reply, sender: "bot", time };
+    addMessage(botMessage);
     messages.push(botMessage);
     saveChat();
-    addMessage(botMessage)
+
+    // Bisa juga emit ke server kalau mau semua client lihat bot
+    socket.emit("send-message", botMessage);
 }
 
 function saveChat() {
@@ -63,10 +63,20 @@ function saveChat() {
 }
 
 function addMessage(msg) {
-  const div = document.createElement("div");
-  div.className = `message ${msg.sender}`;
-  div.textContent = msg.text;
-  chat.appendChild(div);
+    const div = document.createElement("div");
+    div.className = `message ${msg.sender}`;
 
-  chat.scrollTop = chat.scrollHeight;
+    const texts = document.createElement("span");
+    texts.className = "text";
+    texts.textContent = msg.text;
+
+    const times = document.createElement("span");
+    times.className = "time";
+    times.textContent = msg.time || "";
+
+    div.appendChild(texts);
+    div.appendChild(times);
+    chat.appendChild(div);
+
+    chat.scrollTop = chat.scrollHeight;
 }
